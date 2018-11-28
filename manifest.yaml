@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firstk8sapp-deployment
+  labels:
+    app: firstk8sapp-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: firstk8sapp
+  template:
+    metadata:
+      labels:
+        app: firstk8sapp
+    spec:
+      containers:
+      - name: k8sfirstapp
+        image: philjhale/k8sfirstapp:latest
+        ports:
+        - containerPort: 80 # port exposed by container
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: firstk8sapp-service
+  labels:
+    app: firstk8sapp-service
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 4000 # load balancer port (i.e. the public port)
+    targetPort: 80 # connect to contains on this port
+    protocol: TCP
+  selector:
+    app: firstk8sapp # must point to pod label
